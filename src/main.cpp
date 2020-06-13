@@ -27,9 +27,9 @@ struct Window
 	//custom deleter for unique ptr (because we don't use a complete object)
 	struct SDL_Deleters_CD
 	{
-		void operator()(SDL_Window* d) const {SDL_DestroyWindow(d); SDL_Quit();}
+		void operator()(SDL_Window* d)   const { SDL_DestroyWindow(d); SDL_Quit();}
 		void operator()(SDL_Renderer* d) const { SDL_DestroyRenderer(d); };
-		void operator()(SDL_Texture* d) const { SDL_DestroyTexture(d); };
+		void operator()(SDL_Texture* d)  const { SDL_DestroyTexture(d); };
 	};
 
 	Window()
@@ -134,7 +134,7 @@ struct TimeStep
 	//time unit is the milliseconds.
 
 	TimeStep()
-		: m_iDesiredFrameFPS{60}
+		: m_iDesiredFramePS{60}
 		, m_iDesiredUpdatePS{60}
 	{
 		m_dStartTime = std::chrono::high_resolution_clock::now();
@@ -188,11 +188,11 @@ struct TimeStep
 	std::chrono::duration<double, std::milli> m_dLastFrameTime = std::chrono::duration<double>(0);
 	std::chrono::duration<double, std::milli> m_dPhyTimeAccum = std::chrono::duration<double>(0);
 
-	int m_iDesiredFrameFPS;
+	int m_iDesiredFramePS;
 	int m_iDesiredUpdatePS;
 
 	const std::chrono::duration<double, std::milli> m_dPhyxTicks = std::chrono::duration<double>(1.0 / m_iDesiredUpdatePS);
-	const std::chrono::duration<double, std::milli> m_dFrameTime = std::chrono::duration<double>(1.0 / m_iDesiredFrameFPS);
+	const std::chrono::duration<double, std::milli> m_dFrameTime = std::chrono::duration<double>(1.0 / m_iDesiredFramePS);
 };
 
 struct Controller
@@ -203,7 +203,7 @@ struct Controller
 	int m_iMouseX = 0;
 	int m_iMouseY = 0;
 
-	int radius = 10;
+	int m_iRadius = 11;
 };
 
 struct Game
@@ -220,8 +220,8 @@ struct Game
 
 	void update(const Controller& cnt, const double dt)
 	{
-		if (cnt.m_iMouseX < m_vParticles.sizeX && cnt.m_iMouseY < m_vParticles.sizeY)
-			m_vParticles.at(cnt.m_iMouseX, cnt.m_iMouseY) = { 1, (Uint32) RGB_TO_UINT(255, 199, 87, 255), 1 };
+		if(cnt.m_bLeftClick)
+			spawnCircle(cnt);
 
 		for (int j = 1; j < m_vParticles.sizeY; ++j)
 		{
@@ -254,11 +254,58 @@ struct Game
 			if (m_vParticles.at(i - 1 * m, j - 1).type == 0)
 			{
 				m_vParticles.at(i - 1 * m, j - 1) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};
+				m_vParticles.at(i, j) = {};	
 			}
 		}
 	}
 
+	void putPoint(const int x, const int y)
+	{
+		Particle p = { 1, (Uint32)RGB_TO_UINT(255, 199, 87, 255), 1 };
+		if (x < 0 || y < 0 || x >= m_vParticles.sizeX || y >= m_vParticles.sizeY)
+			return;
+		m_vParticles.at(x,y) = p;
+	}
+
+	void putSymetricPoint(const int xc, const int yc, const int x, const int y)
+	{
+		putPoint(xc + x, yc + y);
+		putPoint(xc - x, yc + y);
+		putPoint(xc + x, yc - y);
+		putPoint(xc - x, yc - y);
+		putPoint(xc + y, yc + x);
+		putPoint(xc - y, yc + x);
+		putPoint(xc + y, yc - x);
+		putPoint(xc - y, yc - x);
+	}
+
+
+	void spawnCircle(const Controller& cnt)
+	{
+		int x = 0;
+		int y = cnt.m_iRadius;
+
+		int d  = 3 - 2 * cnt.m_iRadius;
+
+		putSymetricPoint(cnt.m_iMouseX , cnt.m_iMouseY, x, y);
+
+		while (y >= x)
+		{
+			++x;
+			if (d > 0)
+			{
+				y--;
+				d = d + 4 * (x - y) + 10;
+			}
+			else
+				d = d + 4 * x + 6;
+			putSymetricPoint(cnt.m_iMouseX, cnt.m_iMouseY, x, y);
+		}
+
+
+	}
+
+	
 	vec2d<Particle> m_vParticles;
 
 	double m_dGravity = 9.81;
@@ -308,13 +355,20 @@ int main( int argc, char* args[] )
 				{
 					quit = true;
 				}
-				else if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
+				else if (e.type == SDL_MOUSEMOTION)
 				{
 					//Get mouse position
 					SDL_GetMouseState(&cnt.m_iMouseX, &cnt.m_iMouseY);
 					cnt.m_iMouseX /= win.m_iScaleFactor;
 					cnt.m_iMouseY  = win.m_iScreenHeight - cnt.m_iMouseY;
 					cnt.m_iMouseY /= win.m_iScaleFactor;
+				}
+				else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP)
+				{
+					if (e.button.button == SDL_BUTTON_LEFT)
+						cnt.m_bLeftClick = (e.button.state == SDL_PRESSED) ? true : false;
+					else if (e.button.button == SDL_BUTTON_RIGHT)
+						cnt.m_bRightClick = (e.button.state == SDL_PRESSED) ? true : false;
 				}
 				//User presses a key
 				else if (e.type == SDL_KEYDOWN)

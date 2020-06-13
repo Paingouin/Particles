@@ -34,6 +34,7 @@ set( sources
 	)
 set( headers
 		include/containers.h
+		include/utils.h
 	)
 
 if(${PROJECT_NAME}_BUILD_EXECUTABLE)
