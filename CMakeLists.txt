@@ -4,9 +4,10 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
 
-project(Particles VERSION  0.1.0
-                  DESCRIPTION "TestW Particles"
-                  LANGUAGES CXX)
+project(Particles VERSION      0.1.0
+                  DESCRIPTION  "TestW Particles"
+                  LANGUAGES    CXX
+		)
 				    
 
 include(cmake/GlobalOptions.cmake)
@@ -15,21 +16,24 @@ include(cmake/Utils.cmake)
 message("\nStarted CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
 				  		
 						
-# Prevent building in the source directory
+# Prevent building in the source directory 
+
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there.\n")
 endif()
 
 #package manager
+
 include(cmake/ConanConfig.cmake)
 include(cmake/Vcpkg.cmake)
 
 # Read config for the project
+
 set( sources
 		src/main.cpp
 	)
 set( headers
-		src/containers.h
+		include/containers.h
 	)
 
 if(${PROJECT_NAME}_BUILD_EXECUTABLE)
@@ -43,12 +47,14 @@ else()
     ${sources}
   )
 endif()
-add_subdirectory(src)
+
 verbose_message("Found the following header files:\n${headers}\n")
 verbose_message("Found the following source files:\n${sources}\n")
 message("Added all header and implementation files.\n")
 
+
 #compile features
+
 if(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
   target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 else()
@@ -61,11 +67,17 @@ verbose_message("Applied compiler warnings. Using standard ${CXX_STANDARD}.\n")
 
 
 #enable Doxygen
+
 include(cmake/Doxygen.cmake)
+
+#enable Static Analysis
+
+include(cmake/StaticAnalyzers.cmake)
 
 
 # Model project dependencies 
 # Allow usage of header files in the `src` directory, but only for utilities
+
 if(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
   target_include_directories(
     ${PROJECT_NAME}
@@ -151,7 +163,6 @@ install(
 #    include/${PROJECT_NAME}/version.h
 #    @ONLY
 #)
-
 #install(
 #  FILES
 #    ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h
@@ -198,16 +209,15 @@ install(
 
 # Generate export header if specified
 if(${PROJECT_NAME}_GENERATE_EXPORT_HEADER)
-  include(GenerateExportHeader)
-  generate_export_header(${PROJECT_NAME})
-  install(
+	include(GenerateExportHeader)
+	generate_export_header(${PROJECT_NAME})
+	install(
     FILES
-      ${PROJECT_BINARY_DIR}/${PROJECT_NAME}_export.h 
-    DESTINATION
+		${PROJECT_BINARY_DIR}/${PROJECT_NAME}_export.h 
+		DESTINATION
       include
-  )
-
-  message("Generated the export header `${PROJECT_NAME}_export.h` and installed it.")
+	)
+	message("Generated the export header `${PROJECT_NAME}_export.h` and installed it.")
 endif()
 
 message("Finished building requirements for installing the package.\n")

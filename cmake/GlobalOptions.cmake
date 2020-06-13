@@ -6,7 +6,6 @@ option(${PROJECT_NAME}_BUILD_HEADERS_ONLY "Build the project as a header-only li
 option(${PROJECT_NAME}_WARNINGS_AS_ERRORS "Treat compiler warnings as errors." OFF)
 
 
-
 #package
 option(${PROJECT_NAME}_ENABLE_CONAN "Enable the Conan package manager for this project." ON)
 option(${PROJECT_NAME}_ENABLE_VCPKG "Enable the Conan package manager for this project." OFF)
@@ -23,12 +22,10 @@ option(${PROJECT_NAME}_USE_GTEST "Use the GoogleTest project for creating unit t
 # Static analyzers
 
 option(${PROJECT_NAME}_ENABLE_CLANG_TIDY "Enable static analysis with Clang-Tidy." OFF)
-option(${PROJECT_NAME}_ENABLE_CPPCHECK "Enable static analysis with Cppcheck." ON)
-
+option(${PROJECT_NAME}_ENABLE_CPPCHECK "Enable static analysis with Cppcheck." OFF)
 
 
 option(${PROJECT_NAME}_ENABLE_CODE_COVERAGE "Enable code coverage through GCC." OFF)
-
 
 
 option(${PROJECT_NAME}_ENABLE_DOXYGEN "Enable Doxygen documentation builds of source." OFF)
