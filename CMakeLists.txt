@@ -37,6 +37,7 @@ set( headers
 		include/utils.h
 		include/game.h
 		include/timestep.h
+		include/window.h
 	)
 
 if(${PROJECT_NAME}_BUILD_EXECUTABLE)

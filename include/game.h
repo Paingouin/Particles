@@ -48,6 +48,8 @@ struct Game
 		else if (cnt.m_bRightClick)
 			spawnCircle(cnt, 2);
 
+		m_iNbPart = 0;
+
 		for (int j = 1; j < m_vParticles.sizeY -1; ++j)
 		{
 			for (int i = 1; i < m_vParticles.sizeX -1; ++i)
@@ -63,9 +65,11 @@ struct Game
 				{
 				case 1:
 					updateSand(i, j, dt);
+					++m_iNbPart;
 					break;
 				case 2: 
 					updateWater(i, j, dt);
+					++m_iNbPart;
 					break;
 				default:
 					break;
@@ -223,4 +227,6 @@ struct Game
 	vec2d<Particle> m_vParticles;
 
 	double m_dGravity = 9.81;
+
+	Uint32 m_iNbPart = 0;
 };
