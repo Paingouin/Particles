@@ -39,7 +39,7 @@ struct TimeStep
 	//For interpolation
 	inline const double getAlpha() { return m_dPhyTimeAccum / m_dPhyxTicks; }
 	//For calculus
-	inline const double getDeltaTime() { return m_dPhyxTicks.count(); }
+	inline const double getDeltaTime() { return m_dPhyxTicks.count() / 1000.0 ; }
 	//For Log
 	inline const double timeSinceStart() { return std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - m_dStartTime).count(); }
 	//FPS

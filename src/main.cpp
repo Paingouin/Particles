@@ -12,7 +12,6 @@ struct Window
 {
 	//TODO : Use Opengl + glew (or glad)
 
-
 	//custom deleter for unique ptr (because we don't use a complete object)
 	struct SDL_Deleters_CD
 	{
@@ -92,19 +91,20 @@ struct Window
 
 	void drawScreenFromParticles(const vec2d<Particle>& parts)
 	{
-		Uint32 p = 0;
+		Uint32 pNum = 0;
 		for (int j = 0; j < m_iScreenHeight / m_iScaleFactor; ++j)
 		{
 			for (int i = 0; i < m_iScreenWidth / m_iScaleFactor; ++i)
 			{
-				if (parts.at(i, j).type != 0)
+				const Particle& p = parts.at(i, j);
+				if (p.type != 0)
 				{
-					drawPoint(i, ((m_iScreenHeight - 1) / m_iScaleFactor) - j, parts.at(i, j).color);
-					++p;
+					drawPoint(i, ((m_iScreenHeight - 1) / m_iScaleFactor) - j, p.color);
+					++pNum;
 				}		
 			}
 		}
-		std::cout << "Total particles : " << p <<std::endl;
+		//std::cout << "Total particles : " << pNum <<std::endl;
 	}
 
 
@@ -211,19 +211,20 @@ int main( int argc, char* args[] )
 				}
 			}
 
+			//Update while needed
 			while(t.update())
 				game.update(cnt,t.getDeltaTime());
 			
 			std::cout << "FPS : " << t.fps() << std::endl;
-			std::cout << t.timeSinceStart() << std::endl;
+			std::cout << t.timeSinceStart() << std::endl; //get time of the update(s)
 
 
+			//Rendering
 			win.clearScreen();
-
 			win.drawScreenFromParticles(game.m_vParticles);
-
 			win.updateScreen();
 
+			//Sleep
 			t.pause();
 		}
 	}

@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <random>
 
+#include <iostream>
 struct Particle
 {
 	double velocity = 1.0;
@@ -29,7 +30,7 @@ struct Game
 {
 	Game(const int screenWidht, const int screenHeight) : m_vParticles(screenWidht, screenHeight)
 	{
-		srand(time(NULL));
+		srand(time(0));
 	}
 
 	void changeSize(const int screenWidht, const int screenHeight)
@@ -39,7 +40,14 @@ struct Game
 
 	void update(const Controller& cnt, const double dt)
 	{
-	
+		for (int j = 1; j < m_vParticles.sizeY - 1; ++j)
+		{
+			for (int i = 1; i < m_vParticles.sizeX - 1; ++i)
+			{
+				m_vParticles.at(i, j).asMoved = false;
+			}
+		}
+
 		if(cnt.m_bLeftClick)
 			spawnCircle(cnt, 1);
 		else if (cnt.m_bRightClick)
@@ -53,6 +61,8 @@ struct Game
 
 				if (p.asMoved == true)
 					continue;
+				else
+					p.asMoved = true;
 
 				switch (p.type)
 				{
@@ -65,61 +75,102 @@ struct Game
 				default:
 					break;
 				}
+
+
 			}
 		}
 	}
 
 	void updateSand(const int i, const int j , const double dt)
 	{
+		Particle& pM = m_vParticles.at(i, j);
 
-		if (m_vParticles.at(i, j - 1).type == 0)
+		pM.velocity = (m_dGravity * dt) + pM.velocity ;
+
+		int tPosY = j - pM.velocity ;
+
+		if(m_vParticles.isBound(i, tPosY) && m_vParticles.at(i,tPosY).type == 0)
 		{
-			m_vParticles.at(i, j - 1) = m_vParticles.at(i, j);
+			m_vParticles.at(i, tPosY) = pM;
 			m_vParticles.at(i, j) = {};
 		}
 		else
 		{
-			if (m_vParticles.at(i - 1 , j - 1).type == 0)
+			pM.velocity = 1.0;
+			if ((rand() % 2))
 			{
-				m_vParticles.at(i - 1 , j - 1) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};	
+				if (m_vParticles.at(i, j - 1).type == 0)
+				{
+					m_vParticles.at(i, j - 1) = pM;
+					m_vParticles.at(i, j) = {};
+				}
 			}
-			else if (m_vParticles.at(i + 1 , j - 1).type == 0)
+			else
 			{
-				m_vParticles.at(i + 1 , j - 1) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};
-			}
+				int m = (rand() % 2) ? 1 : -1;
+
+				if (m_vParticles.at(i - 1 * m, j - 1).type == 0)
+				{
+					m_vParticles.at(i - 1 * m, j - 1) = pM;
+					m_vParticles.at(i, j) = {};
+				}
+				else if (m_vParticles.at(i + 1 * m, j - 1).type == 0)
+				{
+					m_vParticles.at(i + 1 * m, j - 1) = pM;
+					m_vParticles.at(i, j) = {};
+				}
+			}	
 		}
 	}
 
 	void updateWater(const int i, const int j, const double dt)
 	{
-		if (m_vParticles.at(i, j - 1).type == 0)
+
+		Particle& pM = m_vParticles.at(i, j);
+
+		pM.velocity = (m_dGravity * dt) + pM.velocity;
+
+		int tPosY = j - pM.velocity;
+
+		if (m_vParticles.isBound(i, tPosY) && m_vParticles.at(i, tPosY).type == 0)
 		{
-			m_vParticles.at(i, j - 1) = m_vParticles.at(i, j);
+			m_vParticles.at(i, tPosY) = pM;
 			m_vParticles.at(i, j) = {};
 		}
 		else
 		{
-			if (m_vParticles.at(i - 1, j - 1).type == 0)
+			pM.velocity = 0;
+
+			if ((rand() % 2))
 			{
-				m_vParticles.at(i - 1, j - 1) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};
+				if (m_vParticles.at(i, j - 1).type == 0)
+				{
+					m_vParticles.at(i, j - 1) = m_vParticles.at(i, j);
+					m_vParticles.at(i, j) = {};
+				}
 			}
-			else if (m_vParticles.at(i + 1, j - 1).type == 0)
+			else
 			{
-				m_vParticles.at(i + 1 , j - 1) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};
-			}
-			else if (m_vParticles.at(i - 1 , j).type == 0)
-			{
-				m_vParticles.at(i - 1 , j) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};
-			}
-			else if (m_vParticles.at(i + 1, j ).type == 0)
-			{
-				m_vParticles.at(i + 1, j ) = m_vParticles.at(i, j);
-				m_vParticles.at(i, j) = {};
+				if (m_vParticles.at(i - 1, j - 1).type == 0)
+				{
+					m_vParticles.at(i - 1, j - 1) = m_vParticles.at(i, j);
+					m_vParticles.at(i, j) = {};
+				}
+				else if (m_vParticles.at(i + 1, j - 1).type == 0)
+				{
+					m_vParticles.at(i + 1, j - 1) = m_vParticles.at(i, j);
+					m_vParticles.at(i, j) = {};
+				}
+				else if (m_vParticles.at(i - 1, j).type == 0)
+				{
+					m_vParticles.at(i - 1, j) = m_vParticles.at(i, j);
+					m_vParticles.at(i, j) = {};
+				}
+				else if (m_vParticles.at(i + 1, j).type == 0)
+				{
+					m_vParticles.at(i + 1, j) = m_vParticles.at(i, j);
+					m_vParticles.at(i, j) = {};
+				}
 			}
 		}
 	}
@@ -171,8 +222,6 @@ struct Game
 				d = d + 4 * x + 6;
 			putSymetricPoint(cnt.m_iMouseX, cnt.m_iMouseY, x, y, type);
 		}
-
-
 	}
 
 	
