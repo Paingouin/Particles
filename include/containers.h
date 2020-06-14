@@ -1,5 +1,5 @@
 #pragma once
-//#define _ITERATOR_DEBUG_LEVEL 0
+#define _ITERATOR_DEBUG_LEVEL 0
 #include <vector>
 
 //fast in realise target
@@ -28,6 +28,12 @@ struct vec2d
 	inline const_reference at(const size_type  posX,const  size_type  posY) const noexcept
 	{
 		return vec[posX + posY * sizeX];
+	}
+
+	inline const bool isBound(const int x, const int y) const noexcept
+	{
+		if (x < 0 || y < 0 || x >= sizeX || y >= sizeY) return false;  
+		else return true;
 	}
 
 	std::vector<T> vec;

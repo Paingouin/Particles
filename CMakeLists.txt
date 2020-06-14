@@ -35,6 +35,8 @@ set( sources
 set( headers
 		include/containers.h
 		include/utils.h
+		include/game.h
+		include/timestep.h
 	)
 
 if(${PROJECT_NAME}_BUILD_EXECUTABLE)
