@@ -19,9 +19,9 @@ struct TimeStep
 		m_dLastFrameTime = newTime - m_dStartTime;
 		m_dStartTime = newTime;
 
-		//Prevent loop of death (if LastFrameTime> 2*m_dFrameTicks) (clamp the last frame time )
-		if (m_dLastFrameTime > 2 * m_dFrameTime)
-			m_dLastFrameTime = 2 * m_dFrameTime;
+		//Prevent loop of death (if LastFrameTime> 3*m_dFrameTicks) (clamp the last frame time )
+		if (m_dLastFrameTime > 3 * m_dFrameTime)
+			m_dLastFrameTime = 3 * m_dFrameTime;
 
 		m_dPhyTimeAccum += m_dLastFrameTime;
 	}
@@ -43,7 +43,7 @@ struct TimeStep
 	//For Log
 	inline const double timeSinceStart() { return std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - m_dStartTime).count(); }
 	//FPS
-	inline const double fps() { return 1000.0 / m_dLastFrameTime.count(); }
+	inline const double fps() { return 1000.0 / m_dLastFrameTime.count(); } //NOTE : will be clamped if too high
 
 	//TODO : change granularity of timer resolution (eg timeBeginPeriod)
 	void pause()

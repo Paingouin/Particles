@@ -9,7 +9,7 @@ struct Particle
 {
 	double velocity = 1.0;
 	bool   asMoved = false;
-	Uint32 color;
+	Uint32 color = (Uint32)RGB_TO_UINT(138, 138, 138, 255);
 
 	Uint8 type = 0;
 };
@@ -40,13 +40,8 @@ struct Game
 
 	void update(const Controller& cnt, const double dt)
 	{
-		for (int j = 1; j < m_vParticles.sizeY - 1; ++j)
-		{
-			for (int i = 1; i < m_vParticles.sizeX - 1; ++i)
-			{
-				m_vParticles.at(i, j).asMoved = false;
-			}
-		}
+		auto moveFalse = [](Particle& p) { p.asMoved = false; };
+		std::for_each(m_vParticles.begin(), m_vParticles.end(), moveFalse);
 
 		if(cnt.m_bLeftClick)
 			spawnCircle(cnt, 1);

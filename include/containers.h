@@ -13,6 +13,26 @@ struct vec2d
 	using reference = typename std::vector<T>::reference;
 	using const_reference = typename std::vector<T>::const_reference;
 
+	using iterator = typename std::vector<T>::iterator;
+	using const_iterator = typename std::vector<T>::const_iterator;
+	using reverse_iterator = typename std::vector<T>::reverse_iterator;
+	using const_reverse_iterator = typename std::vector<T>::const_reverse_iterator;
+
+	// iterators
+	constexpr iterator               begin() noexcept { return vec.begin(); };
+	constexpr const_iterator         begin() const noexcept { return vec.begin(); };
+	constexpr iterator               end() noexcept { return vec.end(); };
+	constexpr const_iterator         end() const noexcept { return vec.end(); };
+	constexpr reverse_iterator       rbegin() noexcept { return vec.rbegin(); };
+	constexpr const_reverse_iterator rbegin() const noexcept { return vec.rbegin(); };
+	constexpr reverse_iterator       rend() noexcept { return vec.rend(); };
+	constexpr const_reverse_iterator rend() const noexcept { return vec.rend(); };
+
+	//constexpr const_iterator         cbegin() const noexcept { return vec.cbegin(); };
+	//constexpr const_iterator         cend() const noexcept { return vec.cend(); };
+	//constexpr const_reverse_iterator crbegin() const noexcept { return vec.crbegin(); };
+	//constexpr const_reverse_iterator crend() const noexcept { return vec.crend(); };
+
 	vec2d(size_type  sizeX, size_type  sizeY) 
 		: sizeX{ sizeX }
 		, sizeY{ sizeY }

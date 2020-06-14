@@ -1,12 +1,15 @@
 [requires]
 sdl2/2.0.12@bincrafters/stable
+glew/2.1.0@bincrafters/stable
 gtest/1.8.1@bincrafters/stable
+
 
 [generators]
 cmake
 
 [options]
 sdl2:shared=True
+glew:shared=False
 gtest:build_gmock=True
 gtest:shared=False
 

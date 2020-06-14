@@ -13,7 +13,6 @@ cd ..
 mkdir Build
 cd Build
 
-cmake -H.. -B. -G"Visual Studio 15 2017 Win64"  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Debug 
-)
+cmake -H.. -B. -G"Visual Studio 15 2017 Win64"  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Debug
 
 pause
