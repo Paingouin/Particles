@@ -20,7 +20,6 @@ int main( int argc, char* args[] )
 		//Initialize Game
 		Game game{win.m_iScreenWidth/ win.m_iScaleFactor, win.m_iScreenHeight/ win.m_iScaleFactor };
 
-
 		Controller cnt{};
 
 		//Main loop flag
@@ -93,8 +92,8 @@ int main( int argc, char* args[] )
 			//Rendering
 			win.clearScreen();
 			win.drawScreenFromParticles(game.m_vParticles);
+			//add blur + gamma correction etc...
 			win.updateScreen();
-
 
 			std::cout << "FPS : " << t.fps() << "   /   NB part: " << game.m_iNbPart << std::endl;
 			std::cout << t.timeSinceStart() << std::endl;

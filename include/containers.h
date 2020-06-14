@@ -2,9 +2,8 @@
 #define _ITERATOR_DEBUG_LEVEL 0
 #include <vector>
 
-//fast in realise target
 template<class T>
-struct vec2d
+struct Vec2d
 {
 	// misc types
 	using value_type = typename std::vector<T>::value_type;
@@ -33,7 +32,7 @@ struct vec2d
 	//constexpr const_reverse_iterator crbegin() const noexcept { return vec.crbegin(); };
 	//constexpr const_reverse_iterator crend() const noexcept { return vec.crend(); };
 
-	vec2d(size_type  sizeX, size_type  sizeY) 
+	Vec2d(size_type  sizeX, size_type  sizeY)
 		: sizeX{ sizeX }
 		, sizeY{ sizeY }
 	{

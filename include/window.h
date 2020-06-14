@@ -24,8 +24,6 @@ struct Window
 		, m_iScreenHeight(600)
 		, m_iScaleFactor(2)
 	{
-		m_gDrawtexture.resize(m_iScreenWidth * m_iScreenHeight);
-
 		//Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
@@ -193,6 +191,8 @@ struct Window
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);  //Always set the base and max mipmap levels of a texture.
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
+					m_gDrawtexture.resize(m_iScreenWidth * m_iScreenHeight);
+
 					glDeleteShader(vertexShader);
 					glDeleteShader(fragmentShader);
 
@@ -279,7 +279,7 @@ struct Window
 		SDL_GL_SwapWindow(m_gWindow.get());
 	}
 
-	void drawScreenFromParticles(const vec2d<Particle>& parts)
+	void drawScreenFromParticles(const Vec2d<Particle>& parts)
 	{
 		auto f = [](const Particle& p) -> Uint32 {return p.color; };
 		std::transform(parts.begin(), parts.end(), m_gDrawtexture.begin(), f);

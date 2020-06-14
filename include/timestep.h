@@ -26,7 +26,7 @@ struct TimeStep
 		m_dPhyTimeAccum += m_dLastFrameTime;
 	}
 
-	bool update()
+	inline bool update()
 	{
 		if (m_dPhyTimeAccum >= m_dPhyxTicks)
 		{
@@ -37,13 +37,13 @@ struct TimeStep
 	}
 
 	//For interpolation
-	inline const double getAlpha() { return m_dPhyTimeAccum / m_dPhyxTicks; }
+	inline const double getAlpha() const noexcept { return m_dPhyTimeAccum / m_dPhyxTicks; }
 	//For calculus
-	inline const double getDeltaTime() { return m_dPhyxTicks.count() / 1000.0 ; }
+	inline const double getDeltaTime()  const noexcept { return m_dPhyxTicks.count() / 1000.0 ; }
 	//For Log
-	inline const double timeSinceStart() { return std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - m_dStartTime).count(); }
+	inline const double timeSinceStart() const noexcept { return std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - m_dStartTime).count(); }
 	//FPS
-	inline const double fps() { return 1000.0 / m_dLastFrameTime.count(); } //NOTE : will be clamped if too high
+	inline const double fps()  const noexcept { return 1000.0 / m_dLastFrameTime.count(); } //NOTE : will be clamped if too high
 
 	//TODO : change granularity of timer resolution (eg timeBeginPeriod)
 	void pause()

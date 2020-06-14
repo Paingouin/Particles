@@ -35,7 +35,7 @@ struct Game
 
 	void changeSize(const int screenWidht, const int screenHeight)
 	{
-		m_vParticles = vec2d<Particle>(screenWidht, screenHeight);
+		m_vParticles = Vec2d<Particle>(screenWidht, screenHeight);
 	}
 
 	void update(const Controller& cnt, const double dt)
@@ -96,17 +96,14 @@ struct Game
 		else
 		{
 			pM.velocity = 1.0;
-			if ((rand() % 2))
+			if (m_vParticles.at(i, j - 1).type == 0)
 			{
-				if (m_vParticles.at(i, j - 1).type == 0)
-				{
 					m_vParticles.at(i, j - 1) = pM;
 					m_vParticles.at(i, j) = {};
-				}
 			}
 			else
 			{
-				int m = (rand() % 2) ? 1 : -1;
+				int m = -1;
 
 				if (m_vParticles.at(i - 1 * m, j - 1).type == 0)
 				{
@@ -224,7 +221,7 @@ struct Game
 	}
 
 	
-	vec2d<Particle> m_vParticles;
+	Vec2d<Particle> m_vParticles;
 
 	double m_dGravity = 9.81;
 
