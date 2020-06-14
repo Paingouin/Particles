@@ -25,7 +25,7 @@ struct Window
 	Window()
 		: m_iScreenWidth(800)
 		, m_iScreenHeight(600)
-		, m_iScaleFactor(1)
+		, m_iScaleFactor(3)
 	{
 		m_gDrawtexture.resize(m_iScreenWidth * m_iScreenHeight);
 
@@ -40,12 +40,6 @@ struct Window
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-			SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);        
-			SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);      
-			SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);      
-			SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);   
-			SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);    
 
 
 			//Create window
@@ -104,7 +98,18 @@ struct Window
 		//Get vertex source
 		const GLchar* vertexShaderSource[] =
 		{
-			"#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}\0"
+			"#version 330 core\n"\
+			"layout (location = 0) in vec3 aPos;\n"\
+			"layout (location = 1) in vec4 aColor;\n"\
+			"layout (location = 2) in vec2 aTexCoord;\n"\
+			"out vec4 ourColor;\n"\
+			"out vec2 TexCoord;\n"\
+			"void main()\n"\
+		    "{\n"\
+			" gl_Position = vec4(aPos, 1.0);\n"\
+			" ourColor = aColor;\n"\
+			" TexCoord = aTexCoord;\n"\
+			"}\0"
 		};
 
 		//Set vertex source
@@ -135,7 +140,15 @@ struct Window
 			//Get fragment source
 			const GLchar* fragmentShaderSource[] =
 			{
-				"#version 330 core\nout vec4 FragColor;\n void main() { FragColor  = vec4(1.0f, 0.5f, 0.2f, 1.0f); }"
+				"#version 330 core\n"\
+				"out vec4 FragColor;\n"\
+				"in vec4 ourColor;\n"\
+				"in vec2 TexCoord;\n"\
+				"uniform sampler2D ourTexture;\n"\
+				"void main()\n"\
+				"{\n"\
+				"FragColor = texture(ourTexture, TexCoord);\n"\
+				"}\0"
 			};
 
 			//Set fragment source
@@ -156,6 +169,8 @@ struct Window
 			}
 			else
 			{
+
+
 				//Attach fragment shader to program
 				glAttachShader(m_gProgramID, fragmentShader);
 
@@ -174,36 +189,61 @@ struct Window
 				}
 				else
 				{
-					//glUseProgram(m_gProgramID);
+					glGenTextures(1, &m_gTexture);
+					glBindTexture(GL_TEXTURE_2D, m_gTexture);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);  //Always set the base and max mipmap levels of a texture.
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
 					glDeleteShader(vertexShader);
 					glDeleteShader(fragmentShader);
-					
-					//Initialize clear color
-					glClearColor(138, 138, 138, 255.f);
 
-					////VBO data
-					//GLfloat vertexData[] =
-					//{
-					//	-0.5f, -0.5f,
-					//	 0.5f, -0.5f,
-					//	 0.5f,  0.5f,
-					//	-0.5f,  0.5f
-					//};
-					//
-					////IBO data
-					//GLuint indexData[] = { 0, 1, 2, 3 };
-					//
-					////Create VBO
-					//glGenBuffers(1, &m_gVBO);
-					//glBindBuffer(GL_ARRAY_BUFFER, m_gVBO);
-					//glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW);
-					//
-					////Create IBO
-					//glGenBuffers(1, &m_gIBO);
-					//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_gIBO);
-					//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW);
+					//VBO data
+					GLfloat vertexData[] =
+					{
+						// positions          // colors                // texture coords
+						 1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,   // bottom right
+						-1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+						-1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,    // top left 
+						 1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f,   // top right
+					};
 					
+					//IBO data
+					GLuint indexData[] = 
+					{
+						0, 1, 3,  // first Triangle
+						1, 2, 3 
+					};  // second Triangle};
+
+					//Create VA0;
+					glGenVertexArrays(1, &m_gVAO);
+					glBindVertexArray(m_gVAO);
+					
+					//Create VBO
+					glGenBuffers(1, &m_gVBO);
+					glBindBuffer(GL_ARRAY_BUFFER, m_gVBO);
+					glBufferData(GL_ARRAY_BUFFER,  sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+					
+					//Create IBO
+					glGenBuffers(1, &m_gIBO);
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_gIBO);
+					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexData), indexData, GL_STATIC_DRAW);
+					
+					// position attribute
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+					glEnableVertexAttribArray(0);
+					// color attribute
+					glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+					glEnableVertexAttribArray(1);
+					// texture coord attribute
+					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+					glEnableVertexAttribArray(2);
+					
+					//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+					//glBindVertexArray(0);
+
 				}
 			}
 		}
@@ -229,7 +269,8 @@ struct Window
 
 	void clearScreen() 
 	{ 
-		//Clear color buffer
+		//Initialize clear color
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 	}
@@ -239,35 +280,19 @@ struct Window
 		SDL_GL_SwapWindow(m_gWindow.get());
 	}
 
-	void drawPoint(const int posX,const int posY, const Uint32 color) 
-	{ 
-
-		
-	};
-
 	void drawScreenFromParticles(const vec2d<Particle>& parts)
 	{
-
-		
 		auto f = [](const Particle& p) -> Uint32 {return p.color; };
-
 		std::transform(parts.begin(), parts.end(), m_gDrawtexture.begin(), f);
 
-		glDrawPixels(m_iScreenWidth, m_iScreenHeight, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, m_gDrawtexture.data());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, parts.sizeX, parts.sizeY, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, m_gDrawtexture.data());
 
-		//Uint32 pNum = 0;
-		//for (int j = 0; j < m_iScreenHeight / m_iScaleFactor; ++j)
-		//{
-		//	for (int i = 0; i < m_iScreenWidth / m_iScaleFactor; ++i)
-		//	{
-		//		const Particle& p = parts.at(i, j);
-		//		if (p.type != 0)
-		//		{
-		//			drawPoint(i, ((m_iScreenHeight - 1) / m_iScaleFactor) - j, p.color);
-		//			++pNum;
-		//		}		
-		//	}
-		//}
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_gTexture);
+		glUseProgram(m_gProgramID);
+		glBindVertexArray(m_gVAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		//std::cout << "Total particles : " << pNum <<std::endl;
 	}
 
@@ -289,9 +314,11 @@ struct Window
 
 	//Graphics program
 	GLuint m_gProgramID = 0;
-	GLint m_gVertexPos2DLocation = -1;
+	GLuint m_gVAO = 0;
 	GLuint m_gVBO = 0;
 	GLuint m_gIBO = 0;
+	GLuint m_gTexture = 0;
+
 	SDL_GLContext m_gContext;
 
 	std::vector<Uint32> m_gDrawtexture;
@@ -392,6 +419,7 @@ int main( int argc, char* args[] )
 			win.clearScreen();
 			win.drawScreenFromParticles(game.m_vParticles);
 			win.updateScreen();
+
 
 			std::cout << "FPS : " << t.fps() << std::endl;
 			std::cout << t.timeSinceStart() << std::endl;

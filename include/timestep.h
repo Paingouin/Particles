@@ -8,7 +8,7 @@ struct TimeStep
 
 	TimeStep()
 		: m_iDesiredFramePS{ 60 }
-		, m_iDesiredUpdatePS{ 60 }
+		, m_iDesiredUpdatePS{ 30 }
 	{
 		m_dStartTime = std::chrono::high_resolution_clock::now();
 	}
