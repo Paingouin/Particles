@@ -103,6 +103,9 @@ endif()
 message("Finished setting up include directories.")
 
 # Identify and link with the specific "packages" the project uses
+find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
+
 if(${PROJECT_NAME}_ENABLE_CONAN)
 	target_link_libraries(
 	  ${PROJECT_NAME}
