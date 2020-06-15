@@ -103,7 +103,7 @@ endif()
 message("Finished setting up include directories.")
 
 # Identify and link with the specific "packages" the project uses
-#find_package(package_name package_version REQUIRED package_type [other_options])
+find_package(GLEW REQUIRED)
 if(${PROJECT_NAME}_ENABLE_CONAN)
 	target_link_libraries(
 	  ${PROJECT_NAME}
@@ -111,6 +111,7 @@ if(${PROJECT_NAME}_ENABLE_CONAN)
 	#    dependency1 ...
 	  PRIVATE
 		${CONAN_LIBS}
+		${GLEW_LIBRARIES}
 	#    ${PROJECT_NAME}_PROJECT_OPTIONS        
 	#    ${PROJECT_NAME}_PROJECT_WARNINGS        
 	)
