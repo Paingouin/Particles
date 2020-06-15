@@ -2,6 +2,7 @@
 #define _ITERATOR_DEBUG_LEVEL 0
 #include <vector>
 
+
 template<class T>
 struct Vec2d
 {

@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include <algorithm>
+
 
 struct Window
 {

@@ -36,10 +36,6 @@ if(${PROJECT_NAME}_ENABLE_CONAN)
     BUILD
       missing
   )
-  
-	execute_process(COMMAND ls -la /home/runner/.conan/data/glew/2.1.0/bincrafters/stable/package/47f2cde9a3b0b3c58d5cfbd072deff334035728e)
-	execute_process(COMMAND cat /home/runner/.conan/data/glew/2.1.0/bincrafters/stable/package/47f2cde9a3b0b3c58d5cfbd072deff334035728e/conanmanifest.txt)
-	execute_process(COMMAND cat /home/runner/.conan/data/glew/2.1.0/bincrafters/stable/package/47f2cde9a3b0b3c58d5cfbd072deff334035728e/conaninfo.txt)
 
   verbose_message("Conan is setup and all requires have been installed.")
 endif()

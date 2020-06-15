@@ -3,6 +3,7 @@
 //Using SDL and standard IO
 #include <SDL.h>
 #include <random>
+#include <algorithm>
 
 #include <iostream>
 struct Particle
