@@ -110,7 +110,6 @@ if(${PROJECT_NAME}_ENABLE_CONAN)
 	#    dependency1 ...
 	  PRIVATE
 		${CONAN_LIBS}
-		${GLEW_LIBRARIES}
 	#    ${PROJECT_NAME}_PROJECT_OPTIONS        
 	#    ${PROJECT_NAME}_PROJECT_WARNINGS        
 	)

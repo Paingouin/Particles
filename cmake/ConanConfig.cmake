@@ -36,6 +36,10 @@ if(${PROJECT_NAME}_ENABLE_CONAN)
     BUILD
       missing
   )
+  
+  if (${CMAKE_${LANGUAGE}_COMPILER_ID} STREQUAL GNU)
+	 execute_process(COMMAND ls -la /Users/runner/.conan/data/glew/2.1.0/bincrafters/stable/package/47f2cde9a3b0b3c58d5cfbd072deff334035728e/include)
+  endif()
 
   verbose_message("Conan is setup and all requires have been installed.")
 endif()
