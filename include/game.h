@@ -6,12 +6,13 @@
 #include <algorithm>
 
 #include <iostream>
+
+
 struct Particle
 {
 	double velocity = 1.0;
-	bool   asMoved = false;
 	Uint32 color = (Uint32)RGB_TO_UINT(138, 138, 138, 255);
-
+	Uint8 flags = 0;  //1 : asMoved 
 	Uint8 type = 0;
 };
 
@@ -31,7 +32,7 @@ struct Game
 {
 	Game(const int screenWidht, const int screenHeight) : m_vParticles(screenWidht, screenHeight)
 	{
-		srand(time(0));
+		srand(time(NULL));
 	}
 
 	void changeSize(const int screenWidht, const int screenHeight)
@@ -41,7 +42,7 @@ struct Game
 
 	void update(const Controller& cnt, const double dt)
 	{
-		auto moveFalse = [](Particle& p) { p.asMoved = false; };
+		auto moveFalse = [](Particle& p) { p.flags &= 0x0 ; };
 		std::for_each(m_vParticles.begin(), m_vParticles.end(), moveFalse);
 
 		if(cnt.m_bLeftClick)
@@ -51,16 +52,18 @@ struct Game
 
 		m_iNbPart = 0;
 
-		for (int j = 1; j < m_vParticles.sizeY -1; ++j)
+		m_iRNG =(rand() % 2) ? -1 : 1;
+
+		for (int j = m_vParticles.sizeY - 1; j > 0 ; --j)
 		{
 			for (int i = 1; i < m_vParticles.sizeX -1; ++i)
 			{
 				Particle& p = m_vParticles.at(i, j);
 
-				if (p.asMoved == true)
+				if ((p.flags & 0x01) == true)
 					continue;
 				else
-					p.asMoved = true;
+					p.flags |= 0x01;
 
 				switch (p.type)
 				{
@@ -75,8 +78,6 @@ struct Game
 				default:
 					break;
 				}
-
-
 			}
 		}
 	}
@@ -104,16 +105,14 @@ struct Game
 			}
 			else
 			{
-				int m = -1;
-
-				if (m_vParticles.at(i - 1 * m, j - 1).type == 0)
+				if (m_vParticles.at(i - 1 * m_iRNG, j - 1).type == 0)
 				{
-					m_vParticles.at(i - 1 * m, j - 1) = pM;
+					m_vParticles.at(i - 1 * m_iRNG, j - 1) = pM;
 					m_vParticles.at(i, j) = {};
 				}
-				else if (m_vParticles.at(i + 1 * m, j - 1).type == 0)
+				else if (m_vParticles.at(i + 1 * m_iRNG, j - 1).type == 0)
 				{
-					m_vParticles.at(i + 1 * m, j - 1) = pM;
+					m_vParticles.at(i + 1 * m_iRNG, j - 1) = pM;
 					m_vParticles.at(i, j) = {};
 				}
 			}	
@@ -177,9 +176,9 @@ struct Game
 		Particle p {};
 
 		if (type == 1)
-			p = { 1, false, (Uint32)RGB_TO_UINT(255, 199, 87, 255), 1 };
+			p = { 1, (Uint32)RGB_TO_UINT(255, 199, 87, 255),0, 1 };
 		else if (type == 2)
-			p = { 1, false, (Uint32)RGB_TO_UINT(0, 94, 255, 255), 2 };
+			p = { 1, (Uint32)RGB_TO_UINT(0, 94, 255, 255),0, 2 };
 
 		if (m_vParticles.isBound(x,y))
 			m_vParticles.at(x,y) = p;
@@ -227,4 +226,6 @@ struct Game
 	double m_dGravity = 9.81;
 
 	Uint32 m_iNbPart = 0;
+
+	int m_iRNG = 0;
 };
