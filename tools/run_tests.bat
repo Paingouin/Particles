@@ -8,7 +8,10 @@ REM 	rmdir  /S /Q "%~dp0/Build"
 REM )
 
 
+
+
+cmake --build ../Build --config Debug -j4
 cd ../Build
-ctest -C Debug
+ctest -C Debug -VV
 
 pause
