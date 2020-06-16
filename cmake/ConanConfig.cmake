@@ -33,6 +33,7 @@ if(${PROJECT_NAME}_ENABLE_CONAN)
     OPTIONS
       ${CONAN_OPTIONS}
     BASIC_SETUP
+	KEEP_RPATHS
     BUILD
       missing
   )
