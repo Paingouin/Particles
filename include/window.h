@@ -2,13 +2,12 @@
 
 //Using SDL, glew and standard IO
 
+#include <GL/glew.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #endif
-
-#include <GL/glew.h>
 
 #include <SDL.h>
 #include <SDL_opengl.h>
