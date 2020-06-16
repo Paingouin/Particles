@@ -56,7 +56,6 @@ jobs:
     - name: run tests
       run: |
         cd build
-        otool -D libSDL2-2.0.dylib
         ctest -C $BUILD_TYPE -VV
 
     - name: install project
