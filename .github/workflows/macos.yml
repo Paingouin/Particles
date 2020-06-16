@@ -57,7 +57,8 @@ jobs:
     - name: run tests
       run: |
         cd build
-        DYLD_LIBRARY_PATH=$(pwd) && ctest -C $BUILD_TYPE -VV
+        ls -la bin/
+        ctest -C $BUILD_TYPE -VV
 
     - name: install project
       run: cmake --build build --target install --config Release 
