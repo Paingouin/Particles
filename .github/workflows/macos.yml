@@ -9,6 +9,7 @@ on:
 env:
   BUILD_TYPE: Release
   INSTALL_LOCATION: .local
+  LD_LIBRARY_PATH: $(pwd)
 
 jobs:
   build:
@@ -56,7 +57,7 @@ jobs:
     - name: run tests
       run: |
         cd build
-        ctest -C $BUILD_TYPE -VV
+        DYLD_LIBRARY_PATH=$(pwd) && ctest -C $BUILD_TYPE -VV
 
     - name: install project
       run: cmake --build build --target install --config Release 
