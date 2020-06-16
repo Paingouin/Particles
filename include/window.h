@@ -6,16 +6,14 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
-#include <GLUT/glut.h>
-#else
+#endif
+
 #include <GL/glew.h>
-#include <GL/glu.h>
-#endif // __APPLE__
 
 #include <SDL.h>
 #include <SDL_opengl.h>
-#include <iostream>
 
+#include <iostream>
 #include <algorithm>
 
 
