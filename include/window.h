@@ -1,11 +1,19 @@
 #pragma once
 
 //Using SDL, glew and standard IO
-#include <SDL.h>
-#include <GL/glew.h>
-#include <SDL_opengl.h>
-#include <GL/glu.h>
 
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glu.h>
+#endif // __APPLE__
+
+#include <SDL.h>
+#include <SDL_opengl.h>
 #include <iostream>
 
 #include <algorithm>
