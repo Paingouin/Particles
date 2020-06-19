@@ -2,6 +2,10 @@
 
 //Using SDL, glew and standard IO
 
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+
 #include <GL/glew.h>
 
 #ifdef __APPLE__
@@ -16,12 +20,19 @@
 #include <algorithm>
 
 
+
 struct Window
 {
 	//custom deleter for unique ptr (because we don't use a complete object)
 	struct SDL_Deleters_CD
 	{
-		void operator()(SDL_Window* d)   const { SDL_DestroyWindow(d); SDL_Quit(); }
+		void operator()(SDL_Window* d)   const { 
+			ImGui_ImplOpenGL3_Shutdown();
+			ImGui_ImplSDL2_Shutdown();
+			ImGui::DestroyContext();
+
+			//Destoy SDL_GL context ?
+			SDL_DestroyWindow(d); SDL_Quit(); }
 		void operator()(SDL_Renderer* d) const { SDL_DestroyRenderer(d); };
 		void operator()(SDL_Texture* d)  const { SDL_DestroyTexture(d); };
 	};
@@ -45,7 +56,7 @@ struct Window
 
 
 			//Create window
-			m_gWindow.reset(SDL_CreateWindow("Particles", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_iScreenWidth, m_iScreenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
+			m_gWindow.reset(SDL_CreateWindow("Particles", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_iScreenWidth, m_iScreenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI));
 			if (m_gWindow.get() == nullptr)
 			{
 				std::cout << "Window could not be created! SDL_Error:" << SDL_GetError() << std::endl;
@@ -56,28 +67,40 @@ struct Window
 				m_gContext = SDL_GL_CreateContext(m_gWindow.get());
 				if (m_gContext == NULL)
 				{
-					printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
+					std::cout << "OpenGL context could not be created! SDL Error: "<< SDL_GetError() << std::endl;
 				}
 				else
 				{
+					SDL_GL_MakeCurrent(m_gWindow.get(), m_gContext);
+
+					//Use Vsync
+					if (SDL_GL_SetSwapInterval(1) < 0)
+					{
+						std::cout << "Warning: Unable to set VSync! SDL Error:"<< SDL_GetError() << std::endl;
+					}
+
 					//Initialize GLEW
 					glewExperimental = GL_TRUE;
 					GLenum glewError = glewInit();
 					if (glewError != GLEW_OK)
 					{
-						printf("Error initializing GLEW! %s\n", glewGetErrorString(glewError));
-					}
-					//Use Vsync
-					if (SDL_GL_SetSwapInterval(1) < 0)
-					{
-						printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+						std::cout << "Error initializing GLEW! " << glewGetErrorString(glewError) << std::endl;
 					}
 
 					//Initialize OpenGL
 					if (!initGL())
 					{
-						printf("Unable to initialize OpenGL!\n");
+						std::cout << "Unable to initialize OpenGL" << std::endl;
 					}
+
+					//Initialize imgui.
+					IMGUI_CHECKVERSION();
+					ImGui::CreateContext();
+
+					ImGui::StyleColorsDark();
+
+					ImGui_ImplSDL2_InitForOpenGL(m_gWindow.get(), m_gContext);
+					ImGui_ImplOpenGL3_Init("#version 330 core");
 
 				}
 			}
@@ -275,14 +298,21 @@ struct Window
 
 	void clearScreen()
 	{
+
 		//Initialize clear color
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame(m_gWindow.get());
+		ImGui::NewFrame();
 
 	}
 
 	void updateScreen()
 	{
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(m_gWindow.get());
 	}
 
@@ -326,6 +356,8 @@ struct Window
 	GLuint m_gTexture = 0;
 
 	SDL_GLContext m_gContext;
+
+
 
 	std::vector<Uint32> m_gDrawtexture;
 

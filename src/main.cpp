@@ -30,7 +30,7 @@ int main( int argc, char* args[] )
 			SDL_Event e;
 			while (SDL_PollEvent(&e) != 0)
 			{
-
+				ImGui_ImplSDL2_ProcessEvent(&e);
 				if (e.type == SDL_WINDOWEVENT) {
 					switch (e.window.event) {
 					case SDL_WINDOWEVENT_RESIZED:
@@ -90,11 +90,22 @@ int main( int argc, char* args[] )
 			//Rendering
 			win.clearScreen();
 			win.drawScreenFromParticles(game.m_vParticles);
+
+
+			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+			ImGui::Text("Application avarage %.3f ms/frame (%.1f FPS)", t.avgMsps(), t.avgFps());
+			ImGui::End();
+		
 			//add blur + gamma correction etc...
+
+
+			//Render Imgui + swap
 			win.updateScreen();
 
-			std::cout << "FPS : " << t.fps() << "   /   NB part: " << game.m_iNbPart << std::endl;
-			std::cout << t.timeSinceStart() << std::endl;
+
+			//std::cout << "FPS : " << t.fps() << "   /   NB part: " << game.m_iNbPart << std::endl;
+			//std::cout << t.timeSinceStart() << std::endl;
 
 			//Sleep
 			t.pause();
