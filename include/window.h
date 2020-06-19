@@ -26,13 +26,15 @@ struct Window
 	//custom deleter for unique ptr (because we don't use a complete object)
 	struct SDL_Deleters_CD
 	{
-		void operator()(SDL_Window* d)   const { 
+		void operator()(SDL_Window* d)   const
+		{ 
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
 			ImGui::DestroyContext();
 
 			//Destoy SDL_GL context ?
-			SDL_DestroyWindow(d); SDL_Quit(); }
+			SDL_DestroyWindow(d); SDL_Quit(); 
+		}
 		void operator()(SDL_Renderer* d) const { SDL_DestroyRenderer(d); };
 		void operator()(SDL_Texture* d)  const { SDL_DestroyTexture(d); };
 	};
@@ -328,8 +330,6 @@ struct Window
 		glUseProgram(m_gProgramID);
 		glBindVertexArray(m_gVAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		//std::cout << "Total particles : " << pNum <<std::endl;
 	}
 
 

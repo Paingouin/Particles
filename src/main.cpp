@@ -24,6 +24,7 @@ int main( int argc, char* args[] )
 		bool quit = false;
 		while (!quit)
 		{
+			//Update timers
 			t.startFrame();
 			
 			//Event handler
@@ -88,24 +89,23 @@ int main( int argc, char* args[] )
 				game.update(cnt,t.getDeltaTime());
 
 			//Rendering
+
+			//Clear screen + start imgui new frame
 			win.clearScreen();
+
+			//draw texture from particles
 			win.drawScreenFromParticles(game.m_vParticles);
 
 
-			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
+			ImGui::Begin("Infos");                          // Create a window called "Hello, world!" and append into it.
+			ImGui::Text("Number of particles : %u", game.m_iNbPart);
 			ImGui::Text("Application avarage %.3f ms/frame (%.1f FPS)", t.avgMsps(), t.avgFps());
 			ImGui::End();
 		
 			//add blur + gamma correction etc...
 
-
 			//Render Imgui + swap
 			win.updateScreen();
-
-
-			//std::cout << "FPS : " << t.fps() << "   /   NB part: " << game.m_iNbPart << std::endl;
-			//std::cout << t.timeSinceStart() << std::endl;
 
 			//Sleep
 			t.pause();

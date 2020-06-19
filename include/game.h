@@ -50,8 +50,6 @@ struct Game
 		else if (cnt.m_bRightClick)
 			spawnCircle(cnt, 2);
 
-		m_iNbPart = 0;
-
 		m_iRNG =(rand() % 2) ? -1 : 1;
 
 		for (int j = m_vParticles.sizeY - 1; j > 0 ; --j)
@@ -69,17 +67,17 @@ struct Game
 				{
 				case 1:
 					updateSand(i, j, dt);
-					++m_iNbPart;
 					break;
 				case 2: 
 					updateWater(i, j, dt);
-					++m_iNbPart;
 					break;
 				default:
 					break;
 				}
 			}
 		}
+
+		m_iNbPart = std::count_if(m_vParticles.begin(), m_vParticles.end(), [](Particle& p) {return p.type != 0; });
 	}
 
 	void updateSand(const int i, const int j , const double dt)
@@ -105,15 +103,18 @@ struct Game
 			}
 			else
 			{
-				if (m_vParticles.at(i - 1 * m_iRNG, j - 1).type == 0)
+				if (rand() % 2)
 				{
-					m_vParticles.at(i - 1 * m_iRNG, j - 1) = pM;
-					m_vParticles.at(i, j) = {};
-				}
-				else if (m_vParticles.at(i + 1 * m_iRNG, j - 1).type == 0)
-				{
-					m_vParticles.at(i + 1 * m_iRNG, j - 1) = pM;
-					m_vParticles.at(i, j) = {};
+					if (m_vParticles.at(i - 1 * m_iRNG, j - 1).type == 0)
+					{
+						m_vParticles.at(i - 1 * m_iRNG, j - 1) = pM;
+						m_vParticles.at(i, j) = {};
+					}
+					else if (m_vParticles.at(i + 1 * m_iRNG, j - 1).type == 0)
+					{
+						m_vParticles.at(i + 1 * m_iRNG, j - 1) = pM;
+						m_vParticles.at(i, j) = {};
+					}
 				}
 			}	
 		}
