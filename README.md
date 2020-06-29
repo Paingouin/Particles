@@ -5,11 +5,11 @@
 
 # Particles
 
-### Informations
+## Informations
 
 I've made this project to learn about various techniques of C++/CI/CD/Tests and "modern" Cmake and Github integration.
 
-### Install
+## Install
 
 To run the project you will need to have :
 * A C++17 compiler
@@ -50,7 +50,7 @@ One of my future objective is using a self-hosted docker-env as a multi-platefor
 
 I also want to see if SDL2 can be wrapped around a Web-Asssembly structure.
 
-### Thanks
+## Thanks
 Thanks to filipdutescu for the modern cmake template : https://github.com/filipdutescu/modern-cpp-template
 
 I've done some modifications from his work based on my personnal experiences. 
