@@ -130,7 +130,9 @@ if(${PROJECT_NAME}_ENABLE_CONAN)
 	  PUBLIC
 	#    dependency1 ...
 	  PRIVATE
-		${CONAN_LIBS}
+		CONAN_PKG::sdl2
+		CONAN_PKG::glew
+		CONAN_PKG::gtest
 	#    ${PROJECT_NAME}_PROJECT_OPTIONS        
 	#    ${PROJECT_NAME}_PROJECT_WARNINGS        
 	)

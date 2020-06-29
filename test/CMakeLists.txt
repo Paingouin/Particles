@@ -30,16 +30,16 @@ endif()
 # Load the desired unit testing framework
 
 if(${CMAKE_PROJECT_NAME}_USE_GTEST)
-  find_package(GTest REQUIRED)
+  #find_package(GTest REQUIRED)
 
-  if(${CMAKE_PROJECT_NAME}_USE_GOOGLE_MOCK)
-    set(GOOGLE_MOCK_LIBRARIES GTest::gmock GTest::gmock_main)
-  endif()
+  #if(${CMAKE_PROJECT_NAME}_USE_GOOGLE_MOCK)
+  #  set(GOOGLE_MOCK_LIBRARIES GTest::gmock GTest::gmock_main)
+  #endif()
 
   target_link_libraries(
     ${PROJECT_NAME} 
     PUBLIC
-      ${CONAN_LIBS}
+      CONAN_PKG::gtest
 #      Project
   )
 elseif(${CMAKE_PROJECT_NAME}_USE_CATCH2)

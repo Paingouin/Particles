@@ -2,6 +2,7 @@
 [Bb]uild_release/*
 CMakeCache.*
 CMakeFiles/*
+[Dd]ocs/*
 [Tt]esting/*
 
 ### VisualStudioCode ###
