@@ -5,15 +5,29 @@
 
 # Particles
 
-### Features
+### Informations
 
-* Sand
+I've made this project to learn about various techniques of C++/CI/CD/Tests and "modern" Cmake and Github integration.
 
 ### Install
 
-On windows:
-* Need msvc 2017 + conan  + Cmake
-* Use build.bat script provided in tools folder
+To run the project you will need to have 
+* A C++17 compiler
+* Conan 
+* CMake
+
+You will need to add the bincrafter remote to conan (used to retrieve : SDL2 +  GTEST +  GLEW ) 
+````bash
+$ conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
+````
+
+Then you only need to run cmake and compile the project.
+````bash
+$ cmake -H.. -B. -G"GENERATOR"  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Debug
+$ cmake --build . --target Particles --config Debug
+````
+
+If you are on windows, you can also use the .bat scripts in the `tools` folder.
 
 ## Optional
 
