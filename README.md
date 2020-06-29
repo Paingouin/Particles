@@ -42,5 +42,12 @@ cd build
 ctest -C Release 
 ````
 
+## TODO
+
+One of my future objective is using a self-hosted docker-env as a multi-plateform builder .
+I also want to see if SDL2 can be wrapped around a Web-Asssembly structure.
+
 ### Thanks
 Thanks to filipdutescu for the modern cmake template : https://github.com/filipdutescu/modern-cpp-template
+I've done some modifications from his work based on my personnal experiences. 
+And I'm still learning about single_header projects, how to uses matrix in github worklows, test driven programming, code coverage, that kind of stuff.
