@@ -11,17 +11,17 @@ I've made this project to learn about various techniques of C++/CI/CD/Tests and 
 
 ### Install
 
-To run the project you will need to have 
+To run the project you will need to have :
 * A C++17 compiler
 * Conan 
 * CMake
 
-You will need to add the bincrafter remote to conan (used to retrieve : SDL2 +  GTEST +  GLEW ) 
+You have to add the bincrafter remote to conan (used to retrieve : SDL2 +  GTEST +  GLEW ) :
 ````bash
 $ conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
 ````
 
-Then you only need to run cmake and compile the project.
+Now you can run cmake and compile the project :
 ````bash
 $ mkdir build
 $ cd build
@@ -37,7 +37,7 @@ Install NSIS https://nsis.sourceforge.io/Download for executable packaging.
 
 ## Tests
 
-Run CTest from the build directory, and and pass the desired configuration
+Run CTest from the build directory, and and pass the desired configuration :
 
 ````bash
 cd build 
@@ -47,9 +47,12 @@ ctest -C Release
 ## TODO
 
 One of my future objective is using a self-hosted docker-env as a multi-plateform builder .
+
 I also want to see if SDL2 can be wrapped around a Web-Asssembly structure.
 
 ### Thanks
 Thanks to filipdutescu for the modern cmake template : https://github.com/filipdutescu/modern-cpp-template
+
 I've done some modifications from his work based on my personnal experiences. 
+
 And I'm still learning about single_header projects, how to uses matrix in github worklows, test driven programming, code coverage, that kind of stuff.
