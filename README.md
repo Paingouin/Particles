@@ -23,6 +23,8 @@ $ conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public
 
 Then you only need to run cmake and compile the project.
 ````bash
+$ mkdir build
+$ cd build
 $ cmake -H.. -B. -G"GENERATOR"  -DCMAKE_INSTALL_PREFIX=../install -DCMAKE_BUILD_TYPE=Debug
 $ cmake --build . --target Particles --config Debug
 ````
