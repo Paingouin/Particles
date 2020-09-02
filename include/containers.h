@@ -40,17 +40,17 @@ struct Vec2d
 		vec.resize(sizeX*sizeY);
 	}
 
-	inline reference at(const size_type  posX, const size_type  posY) noexcept
+	inline constexpr reference at(const size_type  posX, const size_type  posY) noexcept
 	{
 		return vec[posX +  posY * sizeX];
 	}
 
-	inline const_reference at(const size_type  posX,const  size_type  posY) const noexcept
+	inline constexpr const_reference at(const size_type  posX,const  size_type  posY) const noexcept
 	{
 		return vec[posX + posY * sizeX];
 	}
 
-	inline const bool isBound(const int x, const int y) const noexcept
+	inline constexpr bool isBound(const int x, const int y) const noexcept
 	{
 		if (x < 0 || y < 0 || x >= sizeX || y >= sizeY) return false;  
 		else return true;
@@ -60,9 +60,6 @@ struct Vec2d
 	size_type  sizeX;
 	size_type  sizeY;
 };
-
-
-
 
 
 

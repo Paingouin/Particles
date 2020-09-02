@@ -4,13 +4,16 @@
 
 #include <SDL.h>
 
+constexpr int DF_DESIRED_FPS = 60;
+constexpr int DF_DESIRED_UPS = 30;
+
 struct TimeStep
 {
-	//time unit is the milliseconds !
+	//time unit is the microseconds !
 
 	TimeStep()
-		: m_iDesiredFramePS{ 60 }
-		, m_iDesiredUpdatePS{ 30 }
+		: m_iDesiredFramePS{ DF_DESIRED_FPS }
+		, m_iDesiredUpdatePS{ DF_DESIRED_UPS }
 		, m_aFrameTimes { }
 		, m_dFrameTimeAccu{ 0 }
 		,m_iFrameTimeIdx { 0 }

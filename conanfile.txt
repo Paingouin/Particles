@@ -3,7 +3,6 @@ sdl2/2.0.12@bincrafters/stable
 glew/2.1.0@bincrafters/stable
 gtest/1.8.1@bincrafters/stable
 
-
 [generators]
 cmake
 
@@ -17,3 +16,7 @@ gtest:shared=False
 [imports]
 bin, *.dll -> ./bin # Copies all dll files from packages bin folder to my "bin" folder
 lib, *.dylib* -> ./bin # Copies all dylib files from packages lib folder to my "bin" folder
+bin, *.dll -> ./Debug
+bin, *.dll -> ./Release
+lib, *.dylib* -> ./Debug
+lib, *.dylib* -> ./Release

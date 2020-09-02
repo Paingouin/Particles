@@ -12,8 +12,8 @@ struct Particle
 {
 	double velocity = 1.0;
 	Uint32 color = (Uint32)RGB_TO_UINT(138, 138, 138, 255);
-	Uint8 flags = 0;  //1 : asMoved 
-	Uint8 type = 0;
+	Uint8 flags = 0;  //1 : asMoved  //2: isBlocked
+	Uint8 type = 0;   //0 : vide  1: sable
 };
 
 
@@ -52,9 +52,9 @@ struct Game
 
 		m_iRNG =(rand() % 2) ? -1 : 1;
 
-		for (int j = m_vParticles.sizeY - 1; j > 0 ; --j)
+		for (size_t j = m_vParticles.sizeY - 1; j > 0 ; --j)
 		{
-			for (int i = 1; i < m_vParticles.sizeX -1; ++i)
+			for (size_t i = 1; i < m_vParticles.sizeX -1; ++i)
 			{
 				Particle& p = m_vParticles.at(i, j);
 

@@ -20,7 +20,6 @@ int main( int argc, char* args[] )
 
 		Controller cnt{};
 
-		//Main loop flag
 		bool quit = false;
 		while (!quit)
 		{
@@ -31,7 +30,6 @@ int main( int argc, char* args[] )
 			SDL_Event e;
 			while (SDL_PollEvent(&e) != 0)
 			{
-				ImGui_ImplSDL2_ProcessEvent(&e);
 				if (e.type == SDL_WINDOWEVENT) {
 					switch (e.window.event) {
 					case SDL_WINDOWEVENT_RESIZED:
@@ -75,7 +73,6 @@ int main( int argc, char* args[] )
 				}
 				else if (e.type == SDL_KEYDOWN)
 				{
-					//Select surfaces based on key press
 					switch (e.key.keysym.sym)
 					{
 					default:
@@ -95,12 +92,6 @@ int main( int argc, char* args[] )
 
 			//draw texture from particles
 			win.drawScreenFromParticles(game.m_vParticles);
-
-
-			ImGui::Begin("Infos");                          // Create a window called "Hello, world!" and append into it.
-			ImGui::Text("Number of particles : %u", game.m_iNbPart);
-			ImGui::Text("Application avarage %.3f ms/frame (%.1f FPS)", t.avgMsps(), t.avgFps());
-			ImGui::End();
 		
 			//add blur + gamma correction etc...
 

@@ -2,10 +2,6 @@
 
 //Using SDL, glew and standard IO
 
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
-
 #include <GL/glew.h>
 
 #ifdef __APPLE__
@@ -28,10 +24,6 @@ struct Window
 	{
 		void operator()(SDL_Window* d)   const
 		{ 
-			ImGui_ImplOpenGL3_Shutdown();
-			ImGui_ImplSDL2_Shutdown();
-			ImGui::DestroyContext();
-
 			//Destoy SDL_GL context ?
 			SDL_DestroyWindow(d); SDL_Quit(); 
 		}
@@ -94,16 +86,6 @@ struct Window
 					{
 						std::cout << "Unable to initialize OpenGL" << std::endl;
 					}
-
-					//Initialize imgui.
-					IMGUI_CHECKVERSION();
-					ImGui::CreateContext();
-
-					ImGui::StyleColorsDark();
-
-					ImGui_ImplSDL2_InitForOpenGL(m_gWindow.get(), m_gContext);
-					ImGui_ImplOpenGL3_Init("#version 330 core");
-
 				}
 			}
 		}
@@ -304,17 +286,10 @@ struct Window
 		//Initialize clear color
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(m_gWindow.get());
-		ImGui::NewFrame();
-
 	}
 
 	void updateScreen()
 	{
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		SDL_GL_SwapWindow(m_gWindow.get());
 	}
 
