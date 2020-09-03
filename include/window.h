@@ -45,7 +45,7 @@ struct Window
 		{
 			//Use OpenGL 3.3 core
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 
@@ -306,6 +306,12 @@ struct Window
 		glBindVertexArray(m_gVAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
+
+	void drawRectangle(int x, int y, int x1, int y1, Uint32 color)
+	{
+
+	}
+
 
 
 	//Order of these three member is important : 

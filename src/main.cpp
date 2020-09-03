@@ -96,6 +96,8 @@ int main( int argc, char* args[] )
 			//add blur + gamma correction etc...
 
 			//Render Imgui + swap
+			win.drawRectangle(0, 0, 1, 1, 111);
+
 			win.updateScreen();
 
 			//Sleep
