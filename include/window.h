@@ -34,7 +34,7 @@ struct Window
 	Window()
 		: m_iScreenWidth(800)
 		, m_iScreenHeight(600)
-		, m_iScaleFactor(2)
+		, m_iScaleFactor(1)
 	{
 		//Initialize SDL
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -178,8 +178,6 @@ struct Window
 			}
 			else
 			{
-
-
 				//Attach fragment shader to program
 				glAttachShader(m_gProgramID, fragmentShader);
 
@@ -298,13 +296,16 @@ struct Window
 		auto f = [](const Particle& p) -> Uint32 {return p.color; };
 		std::transform(parts.begin(), parts.end(), m_gDrawtexture.begin(), f);
 
+		glActiveTexture(m_gTexture);
+		glBindTexture(GL_TEXTURE_2D, m_gTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, parts.sizeX, parts.sizeY, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, m_gDrawtexture.data());
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_gTexture);
 		glUseProgram(m_gProgramID);
 		glBindVertexArray(m_gVAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE0);
 	}
 
 	void drawRectangle(int x, int y, int x1, int y1, Uint32 color)

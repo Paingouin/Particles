@@ -19,7 +19,7 @@ struct Particle
 struct PartChunk
 {
 	bool to_update = false;
-	int	 partActivated = 0;
+	signed int partActivated = 0;
 };
 
 struct Controller
@@ -35,7 +35,7 @@ struct Controller
 
 struct Game
 {
-	Game(const int screenWidht, const int screenHeight) : m_vParticles(screenWidht, screenHeight), m_vPartChunks((screenWidht / 64), (screenHeight / 64))
+	Game(const int screenWidht, const int screenHeight) : m_vParticles(screenWidht, screenHeight), m_vPartChunks(std::ceil(screenWidht / 64.f), std::ceil(screenHeight / 64.f))
 	{
 		srand(time(NULL));
 	}
@@ -43,7 +43,7 @@ struct Game
 	void changeSize(const int screenWidht, const int screenHeight)
 	{
 		m_vParticles = Vec2d<Particle>(screenWidht, screenHeight);
-		m_vPartChunks = Vec2d<PartChunk>((screenWidht / 64), (screenHeight / 64));
+		m_vPartChunks = Vec2d<PartChunk>(std::ceil(screenWidht / 64.f), std::ceil(screenHeight / 64.f));
 	}
 
 	void update(const Controller& cnt, const double dt)
@@ -53,27 +53,52 @@ struct Game
 
 		if(cnt.m_bLeftClick)
 			spawnCircle(cnt, 1);
-		else if (cnt.m_bRightClick)
-			spawnCircle(cnt, 2);
+		//else if (cnt.m_bRightClick)
+		//	spawnCircle(cnt, 2);
 
 		m_iRNG =(rand() % 2) ? -1 : 1;
 
-		for (size_t j =1; j < m_vParticles.sizeY - 1; ++j)
-		{
-			for (size_t i = 1; i < m_vParticles.sizeX -1; ++i)
-			{
-				Particle& p = m_vParticles.at(i, j);
 
-				switch (p.type)
+		for (size_t jCk = 0; jCk < m_vPartChunks.sizeY ; ++jCk)
+		{
+			for (size_t iCk = 0; iCk < m_vPartChunks.sizeX; ++iCk)
+			{
+				PartChunk& pCk = m_vPartChunks.at(iCk, jCk);
+
+				if (pCk.to_update == true)
 				{
-				case 1:
-					updateSand(i, j, dt);
-					break;
-				case 2: 
-					updateWater(i, j, dt);
-					break;
-				default:
-					break;
+					bool chunked_bloked = true;
+
+					for (size_t j = (jCk*64); j < ((jCk * 64) + 64); ++j)
+					{
+						for (size_t i = (iCk * 64); i < ((iCk * 64) + 64) ; ++i)
+						{
+							bool asMoved = true;
+							if (!m_vParticles.isBound(i, j))
+								continue;
+							Particle& p = m_vParticles.at(i, j);
+
+							switch (p.type)
+							{
+							case 1:
+								asMoved = updateSand(i, j, dt);
+								break;
+							case 2:
+								updateWater(i, j, dt);
+								break;
+							default:
+								break;
+							}
+
+							if (asMoved == true)
+								bool chunked_bloked = false;
+						}
+					}
+
+					if (chunked_bloked == true)
+					{
+						pCk.to_update = false;
+					}
 				}
 			}
 		}
@@ -81,7 +106,7 @@ struct Game
 		m_iNbPart = std::count_if(m_vParticles.begin(), m_vParticles.end(), [](Particle& p) {return p.type != 0; });
 	}
 
-	void updateSand(const int i, const int j , const double dt)
+	bool updateSand(const int i, const int j , const double dt)
 	{
 		Particle& pM = m_vParticles.at(i, j);
 
@@ -89,43 +114,38 @@ struct Game
 
 		int tPosY = j - pM.velocity ;
 
-		bool moved = false;
-
 		if(m_vParticles.isBound(i, tPosY) && m_vParticles.at(i,tPosY).type == 0)
 		{
 			movePoint(i, tPosY, i, j, pM);
-			moved = true;
+			return true;
 		}
 		else
 		{
 			pM.velocity = 1.0;
-			if (m_vParticles.at(i, j - 1).type == 0 && (rand() % 2))
+			if (m_vParticles.isBound(i, j - 1) && m_vParticles.at(i, j - 1).type == 0 && (rand() % 2))
 			{
 					movePoint(i, j-1, i, j, pM);
-					moved = true;
+					return true;
 			}
 			else
 			{
 				if (rand() % 2)
 				{
-					if (m_vParticles.at(i - 1 * m_iRNG, j - 1).type == 0 && m_vParticles.at(i - 1 * m_iRNG, j).type == 0)
+					if (m_vParticles.isBound(i - 1 * m_iRNG, j - 1) && m_vParticles.at(i - 1 * m_iRNG, j - 1).type == 0 && m_vParticles.at(i - 1 * m_iRNG, j).type == 0)
 					{
 						movePoint(i - 1 * m_iRNG, j - 1, i, j, pM);
-						moved = true;
+						return true;
 					}
-					else if (m_vParticles.at(i + 1 * m_iRNG, j - 1).type == 0 && m_vParticles.at(i + 1 * m_iRNG, j ).type == 0)
+					else if (m_vParticles.isBound(i + 1 * m_iRNG, j - 1) && m_vParticles.at(i + 1 * m_iRNG, j - 1).type == 0 && m_vParticles.at(i + 1 * m_iRNG, j ).type == 0)
 					{
 						movePoint(i + 1 * m_iRNG, j - 1, i, j, pM);
-						moved = true;
+						return true;
 					}
 				}
 			}	
 		}
 
-		if (moved == false)
-		{
-			removePartChunk(i, j);
-		}
+		return false;
 	}
 
 	void updateWater(const int i, const int j, const double dt)
@@ -201,10 +221,13 @@ struct Game
 
 	void movePoint(const int x, const int y, const int x0 ,const int y0 , Particle& p)
 	{
-		m_vParticles.at(x, y) = p;
-		m_vParticles.at(x0, y0) = {};
-		addPartChunk(x, y);
-		removePartChunk(x0, y0);
+		if (m_vParticles.isBound(x, y))
+		{
+			m_vParticles.at(x, y) = p;
+			m_vParticles.at(x0, y0) = {};
+			addPartChunk(x, y);
+			removePartChunk(x0, y0);
+		}
 	}
 
 	void putSymetricPoint(const int xc, const int yc, const int x, const int y , const Uint8 type)
@@ -246,10 +269,9 @@ struct Game
 
 	void addPartChunk(int x, int y)
 	{
-		PartChunk& p = m_vPartChunks.at(x / 64, y / 64);
+		PartChunk & p = m_vPartChunks.at(x / 64, y / 64);
 		
-		if (p.to_update == false)
-			p.to_update = true;
+		p.to_update = true;
 
 		++p.partActivated;
 	}
@@ -258,9 +280,10 @@ struct Game
 	{
 		PartChunk& p = m_vPartChunks.at(x / 64, y / 64);
 		
-		--p.partActivated;
 		if (p.partActivated == 0)
 			p.to_update = false;
+		if (p.partActivated > 0)
+			--p.partActivated;
 	}
 	
 	Vec2d<Particle> m_vParticles;

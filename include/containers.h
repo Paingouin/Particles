@@ -3,7 +3,7 @@
 #include <vector>
 
 
-template<class T>
+template<typename T>
 struct Vec2d
 {
 	// misc types
@@ -40,12 +40,12 @@ struct Vec2d
 		vec.resize(sizeX*sizeY);
 	}
 
-	inline constexpr reference at(const size_type  posX, const size_type  posY) noexcept
+	inline constexpr reference at(const size_type  posX, const size_type  posY) 
 	{
 		return vec[posX +  posY * sizeX];
 	}
 
-	inline constexpr const_reference at(const size_type  posX,const  size_type  posY) const noexcept
+	inline constexpr const_reference at(const size_type  posX,const  size_type  posY) const 
 	{
 		return vec[posX + posY * sizeX];
 	}
