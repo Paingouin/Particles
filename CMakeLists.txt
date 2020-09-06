@@ -41,6 +41,7 @@ set( headers
 		include/window.h
 	)
 
+
 if(${PROJECT_NAME}_BUILD_EXECUTABLE)
   add_executable(${PROJECT_NAME} ${sources} ${headers})
 elseif(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
@@ -135,6 +136,11 @@ verbose_message("Project is now aliased as ${PROJECT_NAME}::${PROJECT_NAME}.\n")
 
 # Format the project using the `clang-format` target (i.e: cmake --build build --target clang-format)
 add_clang_format_target()
+
+#If build correctly, copy the resources forlder to the binary dir 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
 
 # Install library for easy downstream inclusion  (move to bin the exe etc..)
 include(GNUInstallDirs)

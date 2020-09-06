@@ -12,7 +12,7 @@ struct Particle
 {
 	double velocity = 1.0;
 	Uint32 color = (Uint32)RGB_TO_UINT(138, 138, 138, 255);
-	Uint8 flags = 0;  //1 : asMoved  //2: isBlocked
+	//Uint8 flags = 0;  //1 : asMoved  //2: isBlocked
 	Uint8 type = 0;   //0 : vide  1: sable
 };
 
@@ -91,7 +91,7 @@ struct Game
 							}
 
 							if (asMoved == true)
-								bool chunked_bloked = false;
+								chunked_bloked = false;
 						}
 					}
 
@@ -207,9 +207,9 @@ struct Game
 		Particle p {};
 
 		if (type == 1)
-			p = { 1, (Uint32)RGB_TO_UINT(255, 199, 87, 255),0, 1 };
+			p = { 1, (Uint32)RGB_TO_UINT(255, 199, 87, 255), 1 };
 		else if (type == 2)
-			p = { 1, (Uint32)RGB_TO_UINT(0, 94, 255, 255),0, 2 };
+			p = { 1, (Uint32)RGB_TO_UINT(0, 94, 255, 255), 2 };
 
 		if (m_vParticles.isBound(x, y))
 		{
@@ -279,7 +279,10 @@ struct Game
 	void removePartChunk(int x, int y)
 	{
 		PartChunk& p = m_vPartChunks.at(x / 64, y / 64);
-		
+
+		if (y % 64 == 63)
+			m_vPartChunks.at(x / 64, (y + 64) / 64).to_update = true;
+
 		if (p.partActivated == 0)
 			p.to_update = false;
 		if (p.partActivated > 0)

@@ -13,6 +13,7 @@
 #include <SDL_opengl.h>
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 
 
@@ -104,25 +105,17 @@ struct Window
 		//Create vertex shader
 		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-		//Get vertex source
-		const GLchar* vertexShaderSource[] =
-		{
-			"#version 330 core\n"\
-			"layout (location = 0) in vec3 aPos;\n"\
-			"layout (location = 1) in vec4 aColor;\n"\
-			"layout (location = 2) in vec2 aTexCoord;\n"\
-			"out vec4 ourColor;\n"\
-			"out vec2 TexCoord;\n"\
-			"void main()\n"\
-			"{\n"\
-			" gl_Position = vec4(aPos, 1.0);\n"\
-			" ourColor = aColor;\n"\
-			" TexCoord = aTexCoord;\n"\
-			"}\0"
-		};
+		std::ifstream  vsFile{ "../resources/shaders/vertex.vs"};
 
+		if (!vsFile)
+			throw std::runtime_error("../resources/shaders/vertex.vs" );
+
+		std::string vertexShaderSource{ std::istreambuf_iterator<GLchar>(vsFile), std::istreambuf_iterator<GLchar>() };
+		
+		vsFile.close();
+		const char* c_str = vertexShaderSource.c_str();
 		//Set vertex source
-		glShaderSource(vertexShader, 1, vertexShaderSource, NULL);
+		glShaderSource(vertexShader, 1,	&c_str, NULL);
 
 		//Compile vertex source
 		glCompileShader(vertexShader);
@@ -146,22 +139,18 @@ struct Window
 			//Create fragment shader
 			GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-			//Get fragment source
-			const GLchar* fragmentShaderSource[] =
-			{
-				"#version 330 core\n"\
-				"out vec4 FragColor;\n"\
-				"in vec4 ourColor;\n"\
-				"in vec2 TexCoord;\n"\
-				"uniform sampler2D ourTexture;\n"\
-				"void main()\n"\
-				"{\n"\
-				"FragColor = texture(ourTexture, TexCoord);\n"\
-				"}\0"
-			};
+			std::ifstream  fsFile{ "../resources/shaders/frag.fs" };
+
+			if (!fsFile)
+				throw std::runtime_error("../resources/shaders/frag.fs");
+
+			std::string fragmentShaderSource{ std::istreambuf_iterator<GLchar>(fsFile), std::istreambuf_iterator<GLchar>() };
+
+			fsFile.close();
+			c_str = fragmentShaderSource.c_str();
 
 			//Set fragment source
-			glShaderSource(fragmentShader, 1, fragmentShaderSource, NULL);
+			glShaderSource(fragmentShader, 1, &c_str, NULL);
 
 			//Compile fragment source
 			glCompileShader(fragmentShader);
@@ -212,10 +201,10 @@ struct Window
 					GLfloat vertexData[] =
 					{
 						// positions          // colors                // texture coords
-						 1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,   // bottom right
-						-1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-						-1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,    // top left 
-						 1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f,   // top right
+						 0.8f, -0.8f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f,   // bottom right
+						-0.8f, -0.8f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+						-0.8f,  0.8f, 0.0f,   1.0f, 1.0f, 0.0f, 1.0f,   0.0f, 1.0f,    // top left 
+						 0.8f,  0.8f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f,   // top right
 					};
 
 					//IBO data
@@ -225,16 +214,16 @@ struct Window
 						1, 2, 3
 					};  // second Triangle};
 
-					//Create VA0;
+					//Create VA0; (struct of info)
 					glGenVertexArrays(1, &m_gVAO);
 					glBindVertexArray(m_gVAO);
 
-					//Create VBO
+					//Create VBO (struct of data of vertices)
 					glGenBuffers(1, &m_gVBO);
 					glBindBuffer(GL_ARRAY_BUFFER, m_gVBO);
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
-					//Create IBO
+					//Create IBO (index for order etc)
 					glGenBuffers(1, &m_gIBO);
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_gIBO);
 					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexData), indexData, GL_STATIC_DRAW);
@@ -250,7 +239,6 @@ struct Window
 					glEnableVertexAttribArray(2);
 
 					//glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 					//glBindVertexArray(0);
 
 				}
@@ -280,7 +268,6 @@ struct Window
 
 	void clearScreen()
 	{
-
 		//Initialize clear color
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -304,7 +291,8 @@ struct Window
 		glBindVertexArray(m_gVAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, m_gTexture);
 		glActiveTexture(GL_TEXTURE0);
 	}
 
@@ -338,8 +326,6 @@ struct Window
 	GLuint m_gTexture = 0;
 
 	SDL_GLContext m_gContext;
-
-
 
 	std::vector<Uint32> m_gDrawtexture;
 
