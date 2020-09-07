@@ -20,9 +20,9 @@ struct Vec2d
 
 	// iterators
 	constexpr iterator               begin() noexcept { return vec.begin(); };
-	constexpr const_iterator         begin() const noexcept { return vec.begin(); };
+	constexpr const_iterator         begin() const noexcept { return vec.cbegin(); };
 	constexpr iterator               end() noexcept { return vec.end(); };
-	constexpr const_iterator         end() const noexcept { return vec.end(); };
+	constexpr const_iterator         end() const noexcept { return vec.cend(); };
 	constexpr reverse_iterator       rbegin() noexcept { return vec.rbegin(); };
 	constexpr const_reverse_iterator rbegin() const noexcept { return vec.rbegin(); };
 	constexpr reverse_iterator       rend() noexcept { return vec.rend(); };

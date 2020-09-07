@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <execution>
 
 
 
@@ -281,7 +282,7 @@ struct Window
 	void drawScreenFromParticles(const Vec2d<Particle>& parts)
 	{
 		auto f = [](const Particle& p) -> Uint32 {return p.color; };
-		std::transform(parts.begin(), parts.end(), m_gDrawtexture.begin(), f);
+		std::transform(parts.begin(), parts.end(), m_gDrawtexture.begin(), f); //sequenced_policy 
 
 		glActiveTexture(m_gTexture);
 		glBindTexture(GL_TEXTURE_2D, m_gTexture);

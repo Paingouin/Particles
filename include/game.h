@@ -73,12 +73,11 @@ struct Game
 					{
 						for (size_t i = (iCk * 64); i < ((iCk * 64) + 64) ; ++i)
 						{
-							bool asMoved = true;
+							bool asMoved = false;
 							if (!m_vParticles.isBound(i, j))
 								continue;
-							Particle& p = m_vParticles.at(i, j);
 
-							switch (p.type)
+							switch (m_vParticles.at(i, j).type)
 							{
 							case 1:
 								asMoved = updateSand(i, j, dt);
@@ -103,7 +102,7 @@ struct Game
 			}
 		}
 
-		m_iNbPart = std::count_if(m_vParticles.begin(), m_vParticles.end(), [](Particle& p) {return p.type != 0; });
+		//m_iNbPart = std::count_if(m_vParticles.begin(), m_vParticles.end(), [](Particle& p) {return p.type != 0; });
 	}
 
 	bool updateSand(const int i, const int j , const double dt)
@@ -223,6 +222,7 @@ struct Game
 	{
 		if (m_vParticles.isBound(x, y))
 		{
+
 			m_vParticles.at(x, y) = p;
 			m_vParticles.at(x0, y0) = {};
 			addPartChunk(x, y);
