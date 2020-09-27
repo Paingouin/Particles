@@ -105,10 +105,10 @@ struct Window
 		//Create vertex shader
 		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-		std::ifstream  vsFile{ "../resources/shaders/vertex.vs"};
+		std::ifstream  vsFile{ "./resources/shaders/vertex.vs"};
 
 		if (!vsFile)
-			throw std::runtime_error("../resources/shaders/vertex.vs" );
+			throw std::runtime_error(" error opening ./resources/shaders/vertex.vs" );
 
 		std::string vertexShaderSource{ std::istreambuf_iterator<GLchar>(vsFile), std::istreambuf_iterator<GLchar>() };
 		
@@ -139,10 +139,10 @@ struct Window
 			//Create fragment shader
 			GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-			std::ifstream  fsFile{ "../resources/shaders/frag.fs" };
+			std::ifstream  fsFile{ "./resources/shaders/frag.fs" };
 
 			if (!fsFile)
-				throw std::runtime_error("../resources/shaders/frag.fs");
+				throw std::runtime_error("  error opening ./resources/shaders/frag.fs");
 
 			std::string fragmentShaderSource{ std::istreambuf_iterator<GLchar>(fsFile), std::istreambuf_iterator<GLchar>() };
 
