@@ -16,10 +16,6 @@ To run the project you will need to have :
 * Conan 
 * CMake
 
-You have to add the bincrafter remote to conan (used to retrieve : SDL2 +  GTEST +  GLEW ) :
-````bash
-$ conan remote add bincrafters "https://api.bintray.com/conan/bincrafters/public-conan"
-````
 
 Now you can run cmake and compile the project :
 ````bash

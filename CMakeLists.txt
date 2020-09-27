@@ -44,6 +44,9 @@ set( headers
 
 if(${PROJECT_NAME}_BUILD_EXECUTABLE)
   add_executable(${PROJECT_NAME} ${sources} ${headers})
+#Or : 
+# add_executable(${PROJECT_NAME} ${exe_sources})
+#  add_library(${PROJECT_NAME}_LIB ${headers} ${sources})
 elseif(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
   add_library(${PROJECT_NAME} INTERFACE)
 else()
@@ -83,7 +86,6 @@ include(cmake/StaticAnalyzers.cmake)
 
 # Model project dependencies 
 # Allow usage of header files in the `src` directory, but only for utilities
-
 if(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
   target_include_directories(
     ${PROJECT_NAME}
@@ -97,17 +99,38 @@ else()
     PUBLIC 
       $<INSTALL_INTERFACE:include>    
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-	  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui>
     PRIVATE
       ${CMAKE_CURRENT_SOURCE_DIR}/src
   )
+	if(${PROJECT_NAME}_BUILD_EXECUTABLE)
+		target_include_directories(
+			${PROJECT_NAME}
+			PUBLIC 
+				$<INSTALL_INTERFACE:include>    
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+			PRIVATE
+				${CMAKE_CURRENT_SOURCE_DIR}/src
+		)
+	endif()
 endif()
+
 
 message("Finished setting up include directories.")
 
 # Identify and link with the specific "packages" the project uses
 #find_package(GLEW REQUIRED)
 #find_package(OpenGL REQUIRED)
+#find_package(package_name package_version REQUIRED package_type [other_options])
+#target_link_libraries(
+#  ${PROJECT_NAME}
+#  PUBLIC
+#    dependency1 ...
+#  PRIVATE
+#    dependency2 ...
+#    ${PROJECT_NAME}_PROJECT_OPTIONS        
+#    ${PROJECT_NAME}_PROJECT_WARNINGS        
+#)
+
 if(${PROJECT_NAME}_ENABLE_CONAN)
 	target_link_libraries(
 	  ${PROJECT_NAME}
@@ -141,6 +164,8 @@ add_clang_format_target()
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
+
+verbose_message("${CMAKE_SOURCE_DIR}/resources now copied to $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources .\n")
 
 # Install library for easy downstream inclusion  (move to bin the exe etc..)
 include(GNUInstallDirs)
@@ -241,7 +266,7 @@ message("Finished building requirements for installing the package.\n")
 
 if(${PROJECT_NAME}_ENABLE_UNIT_TESTING)
   enable_testing()
-  message("Build unit tests for the project. Tests should always be found in the test folder\n")
+	message("Build unit tests for the project. Tests should always be found in the test folder\n")
   add_subdirectory(test)
 endif()
 
