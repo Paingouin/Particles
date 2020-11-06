@@ -44,7 +44,7 @@ endif()
 
 
 
-if(${CMAKE_PROJECT_NAME}_USE_GTEST)
+if(${CMAKE_PROJECT_NAME}_USE_GTEST AND NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
   #find_package(GTest REQUIRED)
 
   if(${CMAKE_PROJECT_NAME}_USE_GOOGLE_MOCK)
@@ -67,7 +67,7 @@ elseif(${CMAKE_PROJECT_NAME}_USE_CATCH2)
  #     ${${CMAKE_PROJECT_NAME}_TEST_LIB}
   )
 else()
-  message(FATAL_ERROR "Unknown testing library. Please setup your desired unit testing library by using `target_link_libraries`.")  
+  message( "Unknown testing library. Please setup your desired unit testing library by using `target_link_libraries`.")  
 endif()
 
 #

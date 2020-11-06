@@ -3,6 +3,9 @@
 #include "timestep.h"
 #include "game.h"
 #include "window.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 
 int main( int argc, char* args[] )

@@ -23,9 +23,16 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
 endif()
 
 #package manager
+if( ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    set(USE_FLAGS " -s USE_SDL=2 -s ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
+    set(CMAKE_EXECUTABLE_SUFFIX .html)
+endif()
+
 
 include(cmake/ConanConfig.cmake)
 include(cmake/Vcpkg.cmake)
+
 
 # Read config for the project
 
@@ -101,17 +108,8 @@ else()
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     PRIVATE
       ${CMAKE_CURRENT_SOURCE_DIR}/src
+	  ${SDL2_INCLUDE_DIRS}
   )
-	if(${PROJECT_NAME}_BUILD_EXECUTABLE)
-		target_include_directories(
-			${PROJECT_NAME}
-			PUBLIC 
-				$<INSTALL_INTERFACE:include>    
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-			PRIVATE
-				${CMAKE_CURRENT_SOURCE_DIR}/src
-		)
-	endif()
 endif()
 
 
